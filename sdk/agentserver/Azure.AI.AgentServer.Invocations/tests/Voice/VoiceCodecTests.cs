@@ -23,7 +23,7 @@ public class VoiceCodecTests
             """, typeof(VoiceUserMessageEvent));
         yield return Inbound("user.no_input", """{"item_id":"in_2","count":1}""", typeof(VoiceUserNoInputEvent));
         yield return Inbound("user.speech_started", "{}", typeof(VoiceUserSpeechStartedEvent));
-        yield return Inbound("barge_in", """{"response_id":"r_1","item_id":"it_1","heard_text":"heard"}""", typeof(VoiceBargeInEvent));
+        yield return Inbound("user.barge_in", """{"response_id":"r_1","item_id":"it_1","heard_text":"heard"}""", typeof(VoiceUserBargeInEvent));
         yield return Inbound("response.accepted", """{"response_id":"r_2"}""", typeof(VoiceResponseAcceptedEvent));
         yield return Inbound("response.dropped", """{"response_id":"r_3","reason":"queue_full"}""", typeof(VoiceResponseDroppedEvent));
         yield return Inbound("response.cancelled", """{"response_id":"r_4","heard_text":"heard"}""", typeof(VoiceResponseCancelledEvent));

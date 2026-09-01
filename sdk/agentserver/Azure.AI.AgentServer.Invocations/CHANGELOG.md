@@ -6,6 +6,10 @@
 
 ### Breaking Changes
 
+- Renamed the Voice Bridge interruption event from `barge_in` to
+  `user.barge_in`, `VoiceBargeInEvent` to `VoiceUserBargeInEvent`, and
+  `OnBargeInAsync` to `OnUserBargeInAsync` to match Protocol 1.0.
+
 ### Bugs Fixed
 
 ### Other Changes

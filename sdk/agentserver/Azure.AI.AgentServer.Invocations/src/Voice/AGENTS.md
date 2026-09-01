@@ -40,7 +40,7 @@ Inbound events:
 - `user.message`
 - `user.no_input`
 - `user.speech_started`
-- `barge_in`
+- `user.barge_in`
 - `response.accepted`
 - `response.dropped`
 - `response.cancelled`

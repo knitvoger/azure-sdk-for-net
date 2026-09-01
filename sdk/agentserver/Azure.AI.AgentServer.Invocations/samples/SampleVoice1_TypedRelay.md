@@ -107,9 +107,9 @@ public class VoiceSupportHandler : VoiceHandler
             generation);
     }
 
-    protected override Task OnBargeInAsync(
+    protected override Task OnUserBargeInAsync(
         VoiceSession session,
-        VoiceBargeInEvent bargeIn,
+        VoiceUserBargeInEvent bargeIn,
         CancellationToken cancellationToken)
     {
         CancelGeneration(bargeIn.ResponseId, VoiceTurnOutcome.Cancelled);
