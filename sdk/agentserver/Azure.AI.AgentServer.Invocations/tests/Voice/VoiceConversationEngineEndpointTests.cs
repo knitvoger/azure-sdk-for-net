@@ -22,6 +22,41 @@ public class VoiceConversationEngineEndpointTests
 {
     private static readonly TimeSpan TestTimeout = TimeSpan.FromSeconds(5);
 
+    [TestCase("/invocations_ws")]
+    [TestCase("/conversation_engine")]
+    public async Task BothRoutesDispatchOnlyUserBargeIn(string path)
+    {
+        var observer = new ConnectionObserver();
+        await using var app = BuildVoiceApp(observer);
+        await app.StartAsync();
+        using var socket = await ConnectAsync(app, path);
+        await StartSessionAsync(socket);
+
+        foreach (var messageType in new[] { "barge_in", "user.barge_in" })
+        {
+            await SendTextAsync(socket, JsonSerializer.Serialize(new
+            {
+                type = messageType,
+                id = "m_" + messageType,
+                ts = "2026-10-19T00:00:01Z",
+                response_id = "r_reply",
+                item_id = "it_reply",
+                heard_text = "heard prefix",
+            }));
+        }
+        await AssertResponseAsync(socket, "in_barrier");
+
+        var interruption = observer.Handlers.Single().Interruptions.Single();
+        Assert.Multiple(() =>
+        {
+            Assert.That(interruption.MessageType, Is.EqualTo("user.barge_in"));
+            Assert.That(interruption.ResponseId, Is.EqualTo("r_reply"));
+            Assert.That(interruption.ItemId, Is.EqualTo("it_reply"));
+            Assert.That(interruption.HeardText, Is.EqualTo("heard prefix"));
+        });
+        await CloseAsync(socket);
+    }
+
     [TestCase(true, "", "/invocations_ws")]
     [TestCase(true, "", "/conversation_engine")]
     [TestCase(false, "", "/invocations_ws")]
@@ -342,6 +377,7 @@ public class VoiceConversationEngineEndpointTests
 
         public VoiceSession? Session { get; private set; }
         public VoiceSessionStartEvent? Start { get; private set; }
+        public List<VoiceUserBargeInEvent> Interruptions { get; } = new();
         public TaskCompletionSource Terminating { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
         public int TerminationCount => _terminationCount;
 
@@ -370,6 +406,15 @@ public class VoiceConversationEngineEndpointTests
         {
             Interlocked.Increment(ref _terminationCount);
             Terminating.TrySetResult();
+        }
+
+        protected override Task OnUserBargeInAsync(
+            VoiceSession session,
+            VoiceUserBargeInEvent bargeIn,
+            CancellationToken cancellationToken)
+        {
+            Interruptions.Add(bargeIn);
+            return Task.CompletedTask;
         }
     }
 
