@@ -175,6 +175,12 @@ protocol version `1.0.0`. Rebuild the container with a library build containing 
 support, and deploy Foundry CE routing and CE-aware Voice Live before enabling a
 CE-declaring agent version. Local library tests do not establish deployment readiness.
 
+Caller interruptions use `user.barge_in`, `VoiceUserBargeInEvent`, and
+`OnUserBargeInAsync`. The former `barge_in`, `VoiceBargeInEvent`, and
+`OnBargeInAsync` names are no longer supported. This experimental rename applies
+to both typed routes and requires a matching Voice Live sender; generic raw
+WebSocket handlers and application-owned cancellation/history are unchanged.
+
 The typed Voice relay is experimental and may change or be removed. To use any of its APIs, suppress the `AAAS001` warning:
 
 ```C#

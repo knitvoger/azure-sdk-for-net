@@ -66,7 +66,7 @@ public class VoiceRelayEndToEndTests
             """{"type":"user.message","id":"m_2","ts":"2026-08-13T00:00:01.000Z","item_id":"in_1","content":[{"type":"input_text","text":"hello"}]}""",
             """{"type":"user.no_input","id":"m_3","ts":"2026-08-13T00:00:02.000Z","item_id":"in_2","count":1}""",
             """{"type":"user.speech_started","id":"m_4","ts":"2026-08-13T00:00:03.000Z"}""",
-            """{"type":"barge_in","id":"m_5","ts":"2026-08-13T00:00:04.000Z","response_id":"r_1","heard_text":"heard"}""",
+            """{"type":"user.barge_in","id":"m_5","ts":"2026-08-13T00:00:04.000Z","response_id":"r_1","heard_text":"heard"}""",
             """{"type":"response.accepted","id":"m_6","ts":"2026-08-13T00:00:05.000Z","response_id":"r_2"}""",
             """{"type":"response.dropped","id":"m_7","ts":"2026-08-13T00:00:06.000Z","response_id":"r_3","reason":"queue_full"}""",
             """{"type":"response.cancelled","id":"m_8","ts":"2026-08-13T00:00:07.000Z","response_id":"r_4","heard_text":"heard"}""",
@@ -88,7 +88,7 @@ public class VoiceRelayEndToEndTests
                 "user.message",
                 "user.no_input",
                 "user.speech_started",
-                "barge_in",
+                "user.barge_in",
                 "response.accepted",
                 "response.dropped",
                 "response.cancelled",
@@ -578,9 +578,9 @@ public class VoiceRelayEndToEndTests
             VoiceUserSpeechStartedEvent speechStarted,
             CancellationToken cancellationToken) => Record(session, speechStarted);
 
-        protected override Task OnBargeInAsync(
+        protected override Task OnUserBargeInAsync(
             VoiceSession session,
-            VoiceBargeInEvent bargeIn,
+            VoiceUserBargeInEvent bargeIn,
             CancellationToken cancellationToken) => Record(session, bargeIn);
 
         protected override Task OnResponseAcceptedAsync(
